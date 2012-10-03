@@ -21,13 +21,13 @@ Requirements
 Installation
 ============
 
-# Download latest version
-# Put all files to webserver
-# Change website DocumentRoot to [...]web/
-# Rename all configuration files that containg prefix "example." to files without this prefix. Configuration files situated at protected/config/ directory
-# Create new MySQL database
-# Open protected/config/all.custom.php and modify database connection params
-# Run website
+1. Download latest version
+2. Put all files to webserver
+3. Change website DocumentRoot to [...]web/
+4. Rename all configuration files that containg prefix "example." to files without this prefix. Configuration files situated at protected/config/ directory
+5. Create new MySQL database
+6. Open protected/config/all.custom.php and modify database connection params
+7. Run website
 
 TODO
 ====
