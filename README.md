@@ -3,7 +3,7 @@ Flexo CMS is open-source GPL v3 easy-to-use content management system writed on 
 Directories description:
 ========================
 
-*database* - contain ERP models and SQL schema of database. Not used by app, but contin SQL dump.
+*database* - contain ERP models and SQL schema of database. Not used by app, but contain SQL dump.
 
 *framework* - conatin Yii Framework files.
 
