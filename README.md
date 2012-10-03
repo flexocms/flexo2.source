@@ -24,7 +24,7 @@ Installation
 1. Download latest version
 2. Put all files to webserver
 3. Change website DocumentRoot to [...]web/
-4. Rename all configuration files that containg prefix "example." to files without this prefix. Configuration files situated at protected/config/ directory
+4. Rename all configuration files that contain prefix "example." to files without this prefix. Configuration files situated at protected/config/ directory
 5. Create new MySQL database
 6. Install dump, that situated at database/flexo.sql
 7. Open protected/config/all.custom.php and modify database connection params
