@@ -3,7 +3,7 @@ Flexo CMS is open-source GPL v3 easy-to-use content management system writed on 
 Directories description:
 ========================
 
-*database* - contain ERP models and SQL schema of database. Not used in App. Only describe DB structure for documentation.
+*database* - contain ERP models and SQL schema of database. Not used by app, but contin SQL dump.
 
 *framework* - conatin Yii Framework files.
 
@@ -26,8 +26,9 @@ Installation
 3. Change website DocumentRoot to [...]web/
 4. Rename all configuration files that containg prefix "example." to files without this prefix. Configuration files situated at protected/config/ directory
 5. Create new MySQL database
-6. Open protected/config/all.custom.php and modify database connection params
-7. Run website
+6. Install dump, that situated at database/flexo.sql
+7. Open protected/config/all.custom.php and modify database connection params
+8. Run website
 
 TODO
 ====
