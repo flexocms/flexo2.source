@@ -10,8 +10,8 @@
  * @property string $breadcrumb
  * @property string $keywords
  * @property string $description
- * @property integer $left_id
- * @property integer $right_id
+ * @property integer $left_key
+ * @property integer $right_key
  * @property integer $level
  * @property integer $layout_id
  * @property string $behavior
@@ -61,8 +61,8 @@ class Page extends CActiveRecord
         return array(
             'tree'=>array(
                 'class'=>'ext.NestedSetBehavior.NestedSetBehavior',
-                'leftAttribute'=>'left_id',
-                'rightAttribute'=>'right_id',
+                'leftAttribute'=>'left_key',
+                'rightAttribute'=>'right_key',
                 'levelAttribute'=>'level',
             ),
         );

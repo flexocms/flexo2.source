@@ -84,7 +84,7 @@ class CQTreeGridView extends CGridView
                 }
             }
             catch (Exception $e) {
-                Yii::app()->user->setFlash('CQTeeGridView', $e->getMessage());
+                Yii::app()->user->setFlash('CQTeeGridView', Yii::t('app', $e->getMessage()));
             }
 
         }
@@ -129,13 +129,13 @@ class CQTreeGridView extends CGridView
                       // Call jQuery treeTable plugin to move the branch
                       //$(ui.draggable).appendBranchTo(this);
                       if($(this).hasClass("initialized")) {
-                        window.location.href = "moveNode/action/child/to/"+$(this).attr("id")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = "?r=moveNode/action/child/to/"+$(this).attr("id")+"/id/"+$(ui.draggable).attr("id");
                       }
                       if($(this).hasClass("before")) {
-                        window.location.href = "moveNode/action/before/to/"+$(this).attr("id").replace("before-", "")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = "?r=moveNode/action/before/to/"+$(this).attr("id").replace("before-", "")+"/id/"+$(ui.draggable).attr("id");
                       }
                       if($(this).hasClass("after")) {
-                        window.location.href = "moveNode/action/before/to/"+$(this).attr("id").replace("after-", "")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = "?r=moveNode/action/before/to/"+$(this).attr("id").replace("after-", "")+"/id/"+$(ui.draggable).attr("id");
                       }
                     },
                     hoverClass: "accept",
@@ -165,7 +165,7 @@ class CQTreeGridView extends CGridView
     public function renderItems() {
 
         if(Yii::app()->user->hasFlash('CQTeeGridView')) {
-            print '<div style="background-color:#ffeeee;padding:7px;border:2px solid #cc0000;">'. Yii::app()->user->getFlash("CQTeeGridView") . '</div>';
+            echo '<div class="flash-error">'. Yii::app()->user->getFlash("CQTeeGridView") . '</div>';
         }
         parent::renderItems();
     }
