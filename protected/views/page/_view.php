@@ -29,9 +29,9 @@
 	<?php echo CHtml::encode($data->description); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('parent_id')); ?>:</b>
+	<?php /* <b><?php echo CHtml::encode($data->getAttributeLabel('parent_id')); ?>:</b>
 	<?php echo CHtml::encode($data->parent_id); ?>
-	<br />
+	<br /> */ ?>
 
 	<?php /*
 	<b><?php echo CHtml::encode($data->getAttributeLabel('layout_id')); ?>:</b>

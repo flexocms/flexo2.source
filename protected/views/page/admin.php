@@ -40,17 +40,15 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('zii.widgets.grid.CGridView', array(
+<?php $this->widget('ext.QTreeGridView.CQTreeGridView', array(
 	'id'=>'page-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
+    'ajaxUpdate'=>false,
 	'columns'=>array(
 		'id',
 		'title',
 		'slug',
-		'breadcrumb',
-		'keywords',
-		'description',
 		/*
 		'parent_id',
 		'layout_id',

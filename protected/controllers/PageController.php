@@ -8,6 +8,33 @@ class PageController extends Controller
 	 */
 	public $layout='//layouts/column2';
 
+    /**
+     * Настройки для QTreeGridView.
+     *
+     * @var array Массив настроек для QTreeGridView
+     */
+    public $CQtreeGreedView = array(
+        // название класса
+        'modelClassName' => 'Page',
+        // действие, где выводится QTreeGridView.
+        // Сюда будет идти редирект с других действий
+        'adminAction' => 'admin',
+    );
+
+    /**
+     * Действия для QTreeGridView.
+     * @return array Массив действий для QTreeGridView
+     */
+    public function actions() {
+        return array (
+            'create'=>'ext.QTreeGridView.actions.Create',
+            'update'=>'ext.QTreeGridView.actions.Update',
+            'delete'=>'ext.QTreeGridView.actions.Delete',
+            'moveNode'=>'ext.QTreeGridView.actions.MoveNode',
+            'makeRoot'=>'ext.QTreeGridView.actions.MakeRoot',
+        );
+    }
+
 	/**
 	 * @return array action filters
 	 */
@@ -184,7 +211,7 @@ class PageController extends Controller
      */
     protected function saveModel(Page $model)
     {
-        if ($model->save()) {
+        if ($model->saveNode()) {
             Yii::app()->user->setFlash('success',
                 Yii::t('app', Page::MSG_MODEL_SAVED, array('{title}' => $model->title)));
 

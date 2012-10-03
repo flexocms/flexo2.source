@@ -41,10 +41,10 @@
 		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50)); ?>
 	</div>
 
-	<div class="row">
+	<?php /* <div class="row">
 		<?php echo $form->label($model,'parent_id'); ?>
 		<?php echo $form->textField($model,'parent_id'); ?>
-	</div>
+	</div> */ ?>
 
 	<div class="row">
 		<?php echo $form->label($model,'layout_id'); ?>

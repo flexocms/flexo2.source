@@ -129,7 +129,9 @@ CREATE  TABLE IF NOT EXISTS `flexo`.`page` (
   `breadcrumb` VARCHAR(160) NULL ,
   `keywords` VARCHAR(255) NULL ,
   `description` TEXT NULL ,
-  `parent_id` INT NULL ,
+  `left_id` INT NULL ,
+  `right_id` INT NULL ,
+  `level` INT NULL ,
   `layout_id` INT NULL ,
   `behavior` VARCHAR(25) NULL ,
   `status` INT NULL ,
@@ -143,7 +145,8 @@ CREATE  TABLE IF NOT EXISTS `flexo`.`page` (
   INDEX `fk_page_1_idx` (`created_by_id` ASC) ,
   INDEX `fk_page_2_idx` (`updated_by_id` ASC) ,
   INDEX `fk_page_3_idx` (`layout_id` ASC) ,
-  INDEX `fk_page_page_1_idx` (`parent_id` ASC) ,
+  INDEX `fk_page_page_1_idx` (`left_id` ASC) ,
+  INDEX `fk_page_1_idx1` (`right_id` ASC) ,
   CONSTRAINT `fk_page_user_1`
     FOREIGN KEY (`created_by_id` )
     REFERENCES `flexo`.`user` (`id` )
@@ -159,11 +162,16 @@ CREATE  TABLE IF NOT EXISTS `flexo`.`page` (
     REFERENCES `flexo`.`layout` (`id` )
     ON DELETE SET NULL
     ON UPDATE SET NULL,
-  CONSTRAINT `fk_page_page_1`
-    FOREIGN KEY (`parent_id` )
+  CONSTRAINT `fk_page_left_1`
+    FOREIGN KEY (`left_id` )
     REFERENCES `flexo`.`page` (`id` )
-    ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT,
+  CONSTRAINT `fk_page_right_1`
+    FOREIGN KEY (`right_id` )
+    REFERENCES `flexo`.`page` (`id` )
+    ON DELETE RESTRICT
+    ON UPDATE RESTRICT)
 ENGINE = InnoDB;
 
 

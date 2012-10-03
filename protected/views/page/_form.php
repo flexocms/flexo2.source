@@ -47,7 +47,7 @@
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 
-    <?php if ($model->getIsNewRecord() || ! $model->isRoot()): ?>
+    <?php /* if ($model->getIsNewRecord() || ! $model->isRoot()): ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'parent_id'); ?>
 		<?php echo $form->dropDownList($model,'parent_id',
@@ -55,7 +55,7 @@
         ); ?>
 		<?php echo $form->error($model,'parent_id'); ?>
 	</div>
-    <?php endif; ?>
+    <?php endif; */ ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'layout_id'); ?>

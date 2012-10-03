@@ -10,7 +10,9 @@
  * @property string $breadcrumb
  * @property string $keywords
  * @property string $description
- * @property integer $parent_id
+ * @property integer $left_id
+ * @property integer $right_id
+ * @property integer $level
  * @property integer $layout_id
  * @property string $behavior
  * @property integer $status
@@ -29,6 +31,7 @@
  * @property Page[] $pages
  * @property PagePart[] $pageParts
  * @property PageTag[] $pageTags
+ * @property NestedSetBehavior $nestedSetBehavior
  */
 class Page extends CActiveRecord
 {
@@ -46,6 +49,24 @@ class Page extends CActiveRecord
     const LOGIN_INHERIT = 2;
 
     const MSG_MODEL_SAVED = 'Page {title} saved successfully!';
+
+    /**
+     * @var ID родительской записи
+     */
+    public $parentId;
+
+    // behaviors
+    public function behaviors()
+    {
+        return array(
+            'tree'=>array(
+                'class'=>'ext.NestedSetBehavior.NestedSetBehavior',
+                'leftAttribute'=>'left_id',
+                'rightAttribute'=>'right_id',
+                'levelAttribute'=>'level',
+            ),
+        );
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -74,10 +95,10 @@ class Page extends CActiveRecord
 		// will receive user inputs.
 		return array(
             array('status, title, published_on', 'required'),
-            array('parent_id, slug', 'required', 'on' => self::SCENARIO_CREATE),
+            array('slug', 'required', 'on' => self::SCENARIO_CREATE),
             array('layout_id', 'required', 'on' => self::SCENARIO_UPDATE_ROOT),
             array('slug', 'default', 'value' => '', 'setOnEmpty' => false, 'on' => self::SCENARIO_UPDATE_ROOT),
-			array('parent_id, status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
+			array('status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
 			array('title, keywords', 'length', 'max'=>255),
 			array('slug', 'length', 'max'=>100),
 			array('breadcrumb', 'length', 'max'=>160),
@@ -85,7 +106,7 @@ class Page extends CActiveRecord
 			array('description, created_on, updated_on', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, title, slug, breadcrumb, keywords, description, parent_id, layout_id, behavior, status, created_on, updated_on, published_on, position, created_by_id, updated_by_id', 'safe', 'on'=>'search'),
+			array('id, title, slug, breadcrumb, keywords, description, layout_id, behavior, status, created_on, updated_on, published_on, position, created_by_id, updated_by_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -100,8 +121,8 @@ class Page extends CActiveRecord
 			'createdBy' => array(self::BELONGS_TO, 'User', 'created_by_id'),
 			'updatedBy' => array(self::BELONGS_TO, 'User', 'updated_by_id'),
 			'layout' => array(self::BELONGS_TO, 'Layout', 'layout_id'),
-			'parent' => array(self::BELONGS_TO, 'Page', 'parent_id'),
-			'pages' => array(self::HAS_MANY, 'Page', 'parent_id'),
+			//'parent' => array(self::BELONGS_TO, 'Page', 'parent_id'),
+			//'pages' => array(self::HAS_MANY, 'Page', 'parent_id'),
 			'pageParts' => array(self::HAS_MANY, 'PagePart', 'page_id'),
 			'pageTags' => array(self::HAS_MANY, 'PageTag', 'page_id'),
 		);
@@ -119,7 +140,7 @@ class Page extends CActiveRecord
 			'breadcrumb' => Yii::t('app', 'Breadcrumb'),
 			'keywords' => Yii::t('app', 'Keywords'),
 			'description' => Yii::t('app', 'Description'),
-			'parent_id' => Yii::t('app', 'Parent'),
+			//'parent_id' => Yii::t('app', 'Parent'),
 			'layout_id' => Yii::t('app', 'Layout'),
 			'behavior' => Yii::t('app', 'Behavior'),
 			'status' => Yii::t('app', 'Status'),
@@ -143,13 +164,18 @@ class Page extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
+        // nested tree
+        $criteria->order = $this->tree->hasManyRoots
+                           ? $this->tree->rootAttribute . ', ' . $this->tree->leftAttribute
+                           : $this->tree->leftAttribute;
+
 		$criteria->compare('id',$this->id);
 		$criteria->compare('title',$this->title,true);
 		$criteria->compare('slug',$this->slug,true);
 		$criteria->compare('breadcrumb',$this->breadcrumb,true);
 		$criteria->compare('keywords',$this->keywords,true);
 		$criteria->compare('description',$this->description,true);
-		$criteria->compare('parent_id',$this->parent_id);
+		//$criteria->compare('parent_id',$this->parent_id);
 		$criteria->compare('layout_id',$this->layout_id);
 		$criteria->compare('behavior',$this->behavior,true);
 		$criteria->compare('status',$this->status);
@@ -172,6 +198,7 @@ class Page extends CActiveRecord
     {
         $this->created_by_id = Yii::app()->user->id;
         $this->updated_by_id = Yii::app()->user->id;
+        return true;
     }
 
     /**
@@ -181,7 +208,8 @@ class Page extends CActiveRecord
      */
     public function isRoot()
     {
-        return ! $this->getIsNewRecord() && $this->parent_id == null;
+        return false;
+        //return ! $this->getIsNewRecord() && $this->parent_id == null;
     }
 
     /**

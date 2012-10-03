@@ -27,7 +27,7 @@ $this->menu=array(
 		'breadcrumb',
 		'keywords',
 		'description',
-		'parent_id',
+		//'parent_id',
 		'layout_id',
 		'behavior',
 		'status',
