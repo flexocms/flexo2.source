@@ -21,6 +21,9 @@
  */
 class Theme extends CActiveRecord
 {
+    const ACTIVE_NO = '0';
+    const ACTIVE_YES = '1';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -112,4 +115,18 @@ class Theme extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+    /**
+     * Возвращает активную тему либо null, если активная тема не обнаружена.
+     *
+     * @return Theme|null Объект активной темы
+     */
+    static public function getActive()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('is_active', self::ACTIVE_YES);
+
+        return self::model()->find($criteria);
+    }
 }

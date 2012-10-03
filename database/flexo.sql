@@ -328,6 +328,37 @@ CREATE  TABLE IF NOT EXISTS `flexo`.`snippet` (
 ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `flexo`.`tag`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `flexo`.`tag` (
+  `id` INT NOT NULL ,
+  `name` VARCHAR(100) NULL ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `flexo`.`page_tag`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `flexo`.`page_tag` (
+  `page_id` INT NULL ,
+  `tag_id` INT NULL ,
+  INDEX `fk_page_tag_1_idx` (`page_id` ASC) ,
+  INDEX `fk_page_tag_2_idx` (`tag_id` ASC) ,
+  CONSTRAINT `fk_page_tag_1`
+    FOREIGN KEY (`page_id` )
+    REFERENCES `flexo`.`page` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_page_tag_2`
+    FOREIGN KEY (`tag_id` )
+    REFERENCES `flexo`.`tag` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

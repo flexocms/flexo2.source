@@ -22,15 +22,29 @@
  * @property integer $updated_by_id
  *
  * The followings are the available model relations:
+ * @property User $createdBy
+ * @property User $updatedBy
  * @property Layout $layout
  * @property Page $parent
  * @property Page[] $pages
- * @property User $createdBy
- * @property User $updatedBy
  * @property PagePart[] $pageParts
+ * @property PageTag[] $pageTags
  */
 class Page extends CActiveRecord
 {
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_UPDATE_ROOT = 'updateRoot';
+
+    const STATUS_DRAFT = 1;
+    const STATUS_REVIEWED = 50;
+    const STATUS_PUBLISHED = 100;
+    const STATUS_HIDDEN = 101;
+
+    const LOGIN_NOT_REQUIRED = 0;
+    const LOGIN_REQUIRED = 1;
+    const LOGIN_INHERIT = 2;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -57,12 +71,15 @@ class Page extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('parent_id, layout_id, status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
+            array('layout_id, status, title, published_on', 'required'),
+            array('parent_id, slug', 'required', 'on' => self::SCENARIO_CREATE),
+            array('layout_id', 'required', 'on' => self::SCENARIO_UPDATE_ROOT),
+			array('parent_id, status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
 			array('title, keywords', 'length', 'max'=>255),
 			array('slug', 'length', 'max'=>100),
 			array('breadcrumb', 'length', 'max'=>160),
 			array('behavior', 'length', 'max'=>25),
-			array('description, created_on, updated_on, published_on', 'safe'),
+			array('description, created_on, updated_on', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, title, slug, breadcrumb, keywords, description, parent_id, layout_id, behavior, status, created_on, updated_on, published_on, position, created_by_id, updated_by_id', 'safe', 'on'=>'search'),
@@ -77,12 +94,13 @@ class Page extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'createdBy' => array(self::BELONGS_TO, 'User', 'created_by_id'),
+			'updatedBy' => array(self::BELONGS_TO, 'User', 'updated_by_id'),
 			'layout' => array(self::BELONGS_TO, 'Layout', 'layout_id'),
 			'parent' => array(self::BELONGS_TO, 'Page', 'parent_id'),
 			'pages' => array(self::HAS_MANY, 'Page', 'parent_id'),
-			'createdBy' => array(self::BELONGS_TO, 'User', 'created_by_id'),
-			'updatedBy' => array(self::BELONGS_TO, 'User', 'updated_by_id'),
 			'pageParts' => array(self::HAS_MANY, 'PagePart', 'page_id'),
+			'pageTags' => array(self::HAS_MANY, 'PageTag', 'page_id'),
 		);
 	}
 
@@ -143,4 +161,15 @@ class Page extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+
+    /**
+     * Возвращает признак: является ли текущая страница корневой.
+     *
+     * @return bool Признак: является ли текущая страница корневой
+     */
+    public function isRoot()
+    {
+        return $this->parent_id == null;
+    }
 }
