@@ -206,7 +206,7 @@ class Page extends CActiveRecord
         if ($this->updatedBy) {
             return $this->updatedBy->name;
         }
-        return null;                                             s
+        return null;
     }
 
     /**
