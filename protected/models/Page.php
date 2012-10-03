@@ -165,6 +165,9 @@ class Page extends CActiveRecord
 		));
 	}
 
+    /**
+     * Функция выполняется при первом сохранении информации из модели в БД.
+     */
     public function onBeforeInsert()
     {
         $this->created_by_id = Yii::app()->user->id;
