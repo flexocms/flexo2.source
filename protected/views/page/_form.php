@@ -21,11 +21,13 @@
 		<?php echo $form->error($model,'title'); ?>
 	</div>
 
+    <?php if (! $model->isRoot()): ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'slug'); ?>
 		<?php echo $form->textField($model,'slug',array('size'=>60,'maxlength'=>100)); ?>
 		<?php echo $form->error($model,'slug'); ?>
 	</div>
+    <?php endif; ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'breadcrumb'); ?>
@@ -72,12 +74,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'status'); ?>
-		<?php echo $form->dropDownList($model,'status',array(
-            Page::STATUS_DRAFT => Yii::t('app','Draft'),
-            Page::STATUS_HIDDEN => Yii::t('app','Hidden'),
-            Page::STATUS_PUBLISHED => Yii::t('app','Published'),
-            Page::STATUS_REVIEWED => Yii::t('app','Reviewed'),
-        )); ?>
+		<?php echo $form->dropDownList($model,'status',Page::getStatusItems()); ?>
 		<?php echo $form->error($model,'status'); ?>
 	</div>
 
@@ -86,6 +83,9 @@
         <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
             'model' => $model,
             'attribute' => 'published_on',
+            'options' => array(
+                'dateFormat' => 'yy-mm-dd 00:00:00',
+            ),
         )); ?>
         <?php echo $form->error($model,'published_on'); ?>
     </div>
@@ -100,16 +100,23 @@
 	</div>
 
 	<div class="row">
-        <?php echo Yii::t('app','Created by:'); ?> <?php echo $model->createdBy->name; ?>
+        <?php echo Yii::t('app','Created by:'); ?> <?php echo $model->createdByName; ?>
 	</div>
 
 	<div class="row">
-        <?php echo Yii::t('app','Updated by:'); ?> <?php echo $model->updatedBy->name; ?>
+        <?php echo Yii::t('app','Updated by:'); ?> <?php echo $model->updatedByName; ?>
 	</div>
     <?php endif; ?>
 
 	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->getIsNewRecord() ? Yii::t('app','Create') : Yii::t('app','Save')); ?>
+		<?php echo CHtml::submitButton(
+            $model->getIsNewRecord() ? Yii::t('app','Create'): Yii::t('app','Save'),
+            array('name' => 'commit')
+        ); ?>
+        <?php echo CHtml::submitButton(
+            $model->getIsNewRecord() ? Yii::t('app','Create and Continue'): Yii::t('app','Save and Continue'),
+            array('name' => 'continue')
+        ); ?>
         <?php echo CHtml::link(Yii::t('app', 'Cancel'), $this->createUrl('index')); ?>
 	</div>
 

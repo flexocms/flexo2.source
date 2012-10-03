@@ -72,8 +72,7 @@ class PageController extends Controller
 			$model->attributes=$_POST['Page'];
             $model->setScenario(Page::SCENARIO_CREATE);
 
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+            $this->saveModel($model);
 		}
 
 		$this->render('create',array(
@@ -98,8 +97,7 @@ class PageController extends Controller
 		if(isset($_POST['Page']))
 		{
 			$model->attributes=$_POST['Page'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+            $this->saveModel($model);
 		}
 
 		$this->render('update',array(
@@ -139,8 +137,10 @@ class PageController extends Controller
 	{
 		$model=new Page('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Page']))
-			$model->attributes=$_GET['Page'];
+
+		if ($page = Yii::app()->request->getParam('Page')) {
+            $model->attributes = $page;
+        }
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -150,26 +150,47 @@ class PageController extends Controller
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
+     *
 	 * @param integer the ID of the model to be loaded
 	 */
 	public function loadModel($id)
 	{
-		$model=Page::model()->findByPk($id);
-		if($model===null)
-			throw new CHttpException(404,'The requested page does not exist.');
+		$model = Page::model()->findByPk($id);
+		if ($model === null) {
+            throw new CHttpException(404, Yii::t('app', 'The requested model does not exist.'));
+        }
 		return $model;
 	}
 
 	/**
-	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
+	 * Производит Ajav валидацию модели.
+     *
+	 * @param Page Модель для валидации
 	 */
-	protected function performAjaxValidation($model)
+	protected function performAjaxValidation(Page $model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='page-form')
-		{
+		if (Yii::app()->request->getPost('ajax') === 'page-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
 	}
+
+    /**
+     * Выполняет сохранение модели, учитывая наличие POST параметра commit.
+     * Если параметр commit отсутсвует - производит перенаправление на действие view.
+     * Добавляет flash сообщение об успешном сохранении модели.
+     *
+     * @param Page Модель для сохранения
+     */
+    protected function saveModel(Page $model)
+    {
+        if ($model->save()) {
+            Yii::app()->user->setFlash('success',
+                Yii::t('app', Page::MSG_MODEL_SAVED, array('{title}' => $model->title)));
+
+            if (Yii::app()->request->getPost('commit')) {
+                $this->redirect(array('view','id'=>$model->id));
+            }
+        }
+    }
 }

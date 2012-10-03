@@ -45,6 +45,8 @@ class Page extends CActiveRecord
     const LOGIN_REQUIRED = 1;
     const LOGIN_INHERIT = 2;
 
+    const MSG_MODEL_SAVED = 'Page {title} saved successfully!';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -71,9 +73,10 @@ class Page extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-            array('layout_id, status, title, published_on', 'required'),
+            array('status, title, published_on', 'required'),
             array('parent_id, slug', 'required', 'on' => self::SCENARIO_CREATE),
             array('layout_id', 'required', 'on' => self::SCENARIO_UPDATE_ROOT),
+            array('slug', 'default', 'value' => '', 'setOnEmpty' => false, 'on' => self::SCENARIO_UPDATE_ROOT),
 			array('parent_id, status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
 			array('title, keywords', 'length', 'max'=>255),
 			array('slug', 'length', 'max'=>100),
@@ -110,22 +113,22 @@ class Page extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'title' => 'Title',
-			'slug' => 'Slug',
-			'breadcrumb' => 'Breadcrumb',
-			'keywords' => 'Keywords',
-			'description' => 'Description',
-			'parent_id' => 'Parent',
-			'layout_id' => 'Layout',
-			'behavior' => 'Behavior',
-			'status' => 'Status',
-			'created_on' => 'Created On',
-			'updated_on' => 'Updated On',
-			'published_on' => 'Published On',
-			'position' => 'Position',
-			'created_by_id' => 'Created By',
-			'updated_by_id' => 'Updated By',
+			'id' => Yii::t('app', '#'),
+			'title' => Yii::t('app', 'Title'),
+			'slug' => Yii::t('app', 'Slug'),
+			'breadcrumb' => Yii::t('app', 'Breadcrumb'),
+			'keywords' => Yii::t('app', 'Keywords'),
+			'description' => Yii::t('app', 'Description'),
+			'parent_id' => Yii::t('app', 'Parent'),
+			'layout_id' => Yii::t('app', 'Layout'),
+			'behavior' => Yii::t('app', 'Behavior'),
+			'status' => Yii::t('app', 'Status'),
+			'created_on' => Yii::t('app', 'Created on'),
+			'updated_on' => Yii::t('app', 'Updated on'),
+			'published_on' => Yii::t('app', 'Published on'),
+			'position' => Yii::t('app', 'Position'),
+			'created_by_id' => Yii::t('app', 'Created by'),
+			'updated_by_id' => Yii::t('app', 'Updated by'),
 		);
 	}
 
@@ -162,6 +165,11 @@ class Page extends CActiveRecord
 		));
 	}
 
+    public function onBeforeInsert()
+    {
+        $this->created_by_id = Yii::app()->user->id;
+        $this->updated_by_id = Yii::app()->user->id;
+    }
 
     /**
      * Возвращает признак: является ли текущая страница корневой.
@@ -170,6 +178,50 @@ class Page extends CActiveRecord
      */
     public function isRoot()
     {
-        return $this->parent_id == null;
+        return ! $this->getIsNewRecord() && $this->parent_id == null;
+    }
+
+    /**
+     * Возвращает имя пользователя, создавшего текущию модель.
+     * Если нет связанного пользователя - возвращает null.
+     *
+     * @return string|null Возвращает имя пользователя, создавшего текущию модель
+     */
+    public function getCreatedByName()
+    {
+        if ($this->createdBy) {
+            return $this->createdBy->name;
+        }
+        return null;
+    }
+
+    /**
+     * Возвращает имя пользователя, внесшего последнее изменение в текущию модель.
+     * Если нет связанного пользователя - возвращает null.
+     *
+     * @return string|null Имя пользователя, внесшего последнее изменение в текущую модель
+     */
+    public function getUpdatedByName()
+    {
+        if ($this->updatedBy) {
+            return $this->updatedBy->name;
+        }
+        return null;                                             s
+    }
+
+    /**
+     * Возвращает список key => value, где в качестве ключа выступает
+     * порядковый номер статуса, в качестве значения текстовое обозначение статуса.
+     *
+     * @return array Массив key => value. Ключь - номер статуса, значение - название статуса
+     */
+    static public function getStatusItems()
+    {
+        return array(
+            Page::STATUS_DRAFT => Yii::t('app','Draft'),
+            Page::STATUS_HIDDEN => Yii::t('app','Hidden'),
+            Page::STATUS_PUBLISHED => Yii::t('app','Published'),
+            Page::STATUS_REVIEWED => Yii::t('app','Reviewed'),
+        );
     }
 }
