@@ -37,14 +37,16 @@ class CQTreeGridView extends CGridView
     public function init()
     {
         parent::init();
-        if($this->baseTreeTableUrl===null)
+        if ($this->baseTreeTableUrl===null) {
             $this->baseTreeTableUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.QTreeGridView.treeTable'));
-        
-        if($this->baseJuiUrl===null)
-            $this->baseJuiUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.QTreeGridView.jui'));
+        }
 
-        //Calc parent id from nesteD set
-        if(count($this->dataProvider->data)) {
+        if ($this->baseJuiUrl===null) {
+            $this->baseJuiUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.QTreeGridView.jui'));
+        }
+
+        // Calc parent id from nesteD set
+        if (count($this->dataProvider->data)) {
             $left = $this->dataProvider->data[0]->tree->leftAttribute;
             $right = $this->dataProvider->data[0]->tree->rightAttribute;
             $level = $this->dataProvider->data[0]->tree->levelAttribute;
@@ -82,8 +84,7 @@ class CQTreeGridView extends CGridView
                     }
                     $previousModel = $model;
                 }
-            }
-            catch (Exception $e) {
+            } catch (Exception $e) {
                 Yii::app()->user->setFlash('CQTeeGridView', Yii::t('app', $e->getMessage()));
             }
 
@@ -110,11 +111,11 @@ class CQTreeGridView extends CGridView
             $(document).ready(function()  {
               $("#'.$this->getId().' .items").treeTable();
             });
-            ');
+        ');
 
         $cs->registerScript('draganddrop', '
             $(document).ready(function()  {
-               $("#'.$this->getId().' .items tr.initialized").draggable({
+               $("#' . $this->getId() . ' .items tr.initialized").draggable({
                   helper: "clone",
                   opacity: .75,
                   refreshPositions: true, // Performance?
@@ -123,19 +124,21 @@ class CQTreeGridView extends CGridView
                   scroll: true
                 });
 
+                var url = $("#' . $this->getId() . '").yiiGridView("getUrl");
+
                 $("#'.$this->getId().' .items tr.initialized, #'.$this->getId().' .items tr.before, #'.$this->getId().' .items tr.after").droppable({
                     accept: ".initialized",
                     drop: function(e, ui) {
                       // Call jQuery treeTable plugin to move the branch
                       //$(ui.draggable).appendBranchTo(this);
                       if($(this).hasClass("initialized")) {
-                        window.location.href = "?r=moveNode/action/child/to/"+$(this).attr("id")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = url + "/moveNode&action=child&to="+$(this).attr("id")+"&id="+$(ui.draggable).attr("id");
                       }
                       if($(this).hasClass("before")) {
-                        window.location.href = "?r=moveNode/action/before/to/"+$(this).attr("id").replace("before-", "")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = url + "/moveNode&action=before&to="+$(this).attr("id").replace("before-", "")+"&id="+$(ui.draggable).attr("id");
                       }
                       if($(this).hasClass("after")) {
-                        window.location.href = "?r=moveNode/action/before/to/"+$(this).attr("id").replace("after-", "")+"/id/"+$(ui.draggable).attr("id");
+                        window.location.href = url + "/moveNode&action=after&to="+$(this).attr("id").replace("after-", "")+"&id="+$(ui.draggable).attr("id");
                       }
                     },
                     hoverClass: "accept",
@@ -156,7 +159,7 @@ class CQTreeGridView extends CGridView
                   });
             });
 
-            ');
+        ');
     }
 
     /**
@@ -164,7 +167,7 @@ class CQTreeGridView extends CGridView
      */
     public function renderItems() {
 
-        if(Yii::app()->user->hasFlash('CQTeeGridView')) {
+        if (Yii::app()->user->hasFlash('CQTeeGridView')) {
             echo '<div class="flash-error">'. Yii::app()->user->getFlash("CQTeeGridView") . '</div>';
         }
         parent::renderItems();
@@ -178,28 +181,25 @@ class CQTreeGridView extends CGridView
      */
     public function renderTableRow($row)
     {
-        $model=$this->dataProvider->data[$row];
-        $parentClass = $model->parentId
-                       ?'child-of-'.$model->parentId.' '
-                       :'';
+        $model = $this->dataProvider->data[$row];
+        $parentClass = $model->parentId ? 'child-of-' . $model->parentId . ' ': '';
 
         echo '<tr style="display:none;" class="before" id="before-'.$model->getPrimaryKey().'"><td style="padding:0;"><div style="height:3px;"></div></td></tr>';
 
-        if($this->rowCssClassExpression!==null)
-        {
+        if ($this->rowCssClassExpression!==null) {
             echo '<tr id="'.$model->getPrimaryKey().'" class="'.$parentClass.$this->evaluateExpression($this->rowCssClassExpression,array('row'=>$row,'data'=>$model)).'">';
-        }
-        else if(is_array($this->rowCssClass) && ($n=count($this->rowCssClass))>0)
+        } else if(is_array($this->rowCssClass) && ($n=count($this->rowCssClass))>0) {
             echo '<tr id="'.$model->getPrimaryKey().'" class="'.$parentClass.$this->rowCssClass[$row%$n].'">';
-        else
+        } else {
             echo '<tr id="'.$model->getPrimaryKey().'" class="'.$parentClass.'">';
-        foreach($this->columns as $column) {
+        }
+
+        foreach ($this->columns as $column) {
             $column->renderDataCell($row);
         }
 
         echo "</tr>\n";
         echo '<tr style="display:none;" class="after" id="after-'.$model->getPrimaryKey().'"><td style="padding:0;"><div style="height:3px;"></div></td></tr>';
-       
     }
 
 }

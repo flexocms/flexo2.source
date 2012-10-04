@@ -1,8 +1,9 @@
 <?php
 
-class MoveNode extends CAction {
-
-    public function run($action, $to, $id) {
+class MoveNode extends CAction
+{
+    public function run($action, $to, $id)
+    {
         $to = CActiveRecord::model($this->getController()->CQtreeGreedView['modelClassName'])->findByPk((int) $to);
         $moved = CActiveRecord::model($this->getController()->CQtreeGreedView['modelClassName'])->findByPk((int) $id);
 
@@ -34,4 +35,3 @@ class MoveNode extends CAction {
         $this->getController()->redirect(array($this->getController()->CQtreeGreedView['adminAction']));
     }
 }
-?>

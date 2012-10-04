@@ -1,8 +1,9 @@
 <?php
 
-class MakeRoot extends CAction {
-
-    public function run($id) {
+class MakeRoot extends CAction
+{
+    public function run($id)
+    {
         $model = CActiveRecord::model($this->getController()->CQtreeGreedView['modelClassName'])->findByPk((int) $id);
 
         if (!is_null($model)) {
@@ -15,4 +16,3 @@ class MakeRoot extends CAction {
         $this->getController()->redirect(array($this->getController()->CQtreeGreedView['adminAction']));
     }
 }
-?>

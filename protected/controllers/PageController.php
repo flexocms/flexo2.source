@@ -18,7 +18,7 @@ class PageController extends Controller
         'modelClassName' => 'Page',
         // действие, где выводится QTreeGridView.
         // Сюда будет идти редирект с других действий
-        'adminAction' => 'admin',
+        'adminAction' => 'index',
     );
 
     /**
@@ -63,7 +63,7 @@ class PageController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete','moveNode','makeRoot'),
+				'actions'=>array('index','delete','moveNode','makeRoot'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -147,20 +147,9 @@ class PageController extends Controller
 	}
 
 	/**
-	 * Lists all models.
-	 */
-	public function actionIndex()
-	{
-		$dataProvider=new CActiveDataProvider('Page');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
+	public function actionIndex()
 	{
 		$model=new Page('search');
 		$model->unsetAttributes();  // clear any default values
@@ -169,7 +158,7 @@ class PageController extends Controller
             $model->attributes = $page;
         }
 
-		$this->render('admin',array(
+		$this->render('index',array(
 			'model'=>$model,
 		));
 	}

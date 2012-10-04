@@ -1,8 +1,9 @@
 <?php
 
-class Create extends CAction {
-
-    public function run() {
+class Create extends CAction
+{
+    public function run()
+    {
         $modelClassName = $this->getController()->CQtreeGreedView['modelClassName'];
         $model = new $modelClassName();
 
@@ -31,4 +32,3 @@ class Create extends CAction {
         ));
     }
 }
-?>

@@ -1,8 +1,9 @@
 <?php
 
-class Delete extends CAction {
-
-    public function run($id) {
+class Delete extends CAction
+{
+    public function run($id)
+    {
         if( Yii::app()->request->isPostRequest)
         {
             $model = CActiveRecord::model($this->getController()->CQtreeGreedView['modelClassName'])->findByPk((int) $id);
@@ -22,4 +23,3 @@ class Delete extends CAction {
             throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
     }
 }
-?>

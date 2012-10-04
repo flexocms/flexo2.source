@@ -1,8 +1,9 @@
 <?php
 
-class Update extends CAction {
-
-    public function run($id) {
+class Update extends CAction
+{
+    public function run($id)
+    {
         $model = CActiveRecord::model($this->getController()->CQtreeGreedView['modelClassName'])->findByPk((int) $id);
         if($model===null) {
             $this->getController()->redirect(array($this->getController()->CQtreeGreedView['adminAction']));
@@ -21,4 +22,3 @@ class Update extends CAction {
         ));
     }
 }
-?>
