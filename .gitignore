@@ -1,8 +1,5 @@
 .idea/
 
-web/assets/
-
-protected/runtime/
 protected/config/main.custom.php
 protected/config/all.custom.php
 protected/config/console.custom.php

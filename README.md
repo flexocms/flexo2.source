@@ -28,7 +28,8 @@ Installation
 5. Create new MySQL database
 6. Install dump, that situated at database/flexo.sql
 7. Open protected/config/all.custom.php and modify database connection params
-8. Run website
+8. Change permissions of directories web/assets/ and protected/runtime/ to 777 (for more info look at http://www.yiiframework.com/forum/index.php/topic/22133-change-permission-of-directories-deployment-yii/)
+9. Run website
 
 TODO
 ====
