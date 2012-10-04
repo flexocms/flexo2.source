@@ -47,7 +47,7 @@ class PagePart extends CActiveRecord
 		return array(
 			array('page_id', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
-            array('page_id, name, content', 'required'),
+            array('name, content', 'required'),
 			array('filter', 'length', 'max'=>25),
 			array('is_protected', 'length', 'max'=>1),
 			array('content, content_html', 'safe'),

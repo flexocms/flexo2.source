@@ -9,6 +9,9 @@
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'page-form',
 	'enableAjaxValidation'=>false,
+    'htmlOptions' => array(
+        'class' => 'form',
+    ),
 )); ?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
@@ -139,3 +142,27 @@
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
+
+<?php
+$script = <<<JS
+$('.form .sticky input:not(.error), .form .sticky input:not(.error), .form .sticky select:not(.error), .form .sticky textarea:not(.error)').each(function(){
+		var value;
+		if(this.tagName=='SELECT')
+			value=this.options[this.selectedIndex].text;
+		else if(this.tagName=='TEXTAREA')
+			value=$(this).html();
+		else
+			value=$(this).val();
+		if(value=='')
+			value='[empty]';
+		$(this).before('<div class="value">'+value+'</div>').hide();
+	});
+
+	$(document).on('click', '.form .sticky .value', function(){
+		$(this).hide();
+		$(this).next().show().get(0).focus();
+	});
+JS;
+
+Yii::app()->clientScript->registerScript('page.form', $script);
+?>

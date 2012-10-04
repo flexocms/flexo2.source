@@ -1,5 +1,5 @@
 <fieldset class="item">
-    <legend><?php echo $form->textField($model,'[' . $index . ']name'); ?></legend>
+    <legend class="sticky"><?php echo $form->textField($model,'[' . $index . ']name'); ?></legend>
 
     <?php echo $form->errorSummary($model); ?>
 
