@@ -17,6 +17,8 @@
  */
 class PagePart extends CActiveRecord
 {
+    const DEFAULT_NAME = 'body';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -45,6 +47,7 @@ class PagePart extends CActiveRecord
 		return array(
 			array('page_id', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
+            array('page_id, name, content', 'required'),
 			array('filter', 'length', 'max'=>25),
 			array('is_protected', 'length', 'max'=>1),
 			array('content, content_html', 'safe'),
@@ -105,4 +108,17 @@ class PagePart extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-}
+
+    /**
+     * Сгенерировать новую модель с начальными параметрами.
+     *
+     * @return PagePart Новая модель класса PagePart
+     */
+    static public function newModel()
+    {
+        $model = new PagePart();
+        $model->name = self::DEFAULT_NAME;
+        return $model;
+    }
+
+} // end class

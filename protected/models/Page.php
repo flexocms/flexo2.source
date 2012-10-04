@@ -55,6 +55,11 @@ class Page extends CActiveRecord
      */
     public $parentId;
 
+    /**
+     * @var Массив, содержащий части страницы
+     */
+    private $_pageParts = array();
+
     // behaviors
     public function behaviors()
     {
@@ -98,7 +103,7 @@ class Page extends CActiveRecord
             array('slug', 'required', 'on' => self::SCENARIO_CREATE),
             array('layout_id', 'required', 'on' => self::SCENARIO_UPDATE_ROOT),
             array('slug', 'default', 'value' => '', 'setOnEmpty' => false, 'on' => self::SCENARIO_UPDATE_ROOT),
-			array('status, position, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
+			array('status, position, layout_id, created_by_id, updated_by_id', 'numerical', 'integerOnly'=>true),
 			array('title, keywords', 'length', 'max'=>255),
 			array('slug', 'length', 'max'=>100),
 			array('breadcrumb', 'length', 'max'=>160),
@@ -241,6 +246,91 @@ class Page extends CActiveRecord
     }
 
     /**
+     * Получить все части страницы.
+     * Возвращает массив моделей типа PagePart.
+     * Если ни одной части страницы не было создано - возвращает массив с одной частью.
+     *
+     * @return array Массив частей страницы
+     */
+    public function getPageParts()
+    {
+        if (! $this->_pageParts) {
+            if ($this->pageParts) {
+                $this->_pageParts = $this->pageParts;
+            } else {
+                $this->_pageParts = array(PagePart::newModel());
+            }
+        }
+
+        return $this->_pageParts;
+    }
+
+    /**
+     * Массово присвоить атрибуты частям страницы.
+     * В качестве параметра $pagePartsAttrs ожидается двумерный массив,
+     * содержащий в качестве элементов наборы атрибутов для модели PagePart.
+     *
+     * @param array $pagePartsAttrs Двумерный массив, содержащий наборы атрибутов для модели PagePart
+     */
+    public function setPagePartsAttributes($pagePartsAttrs)
+    {
+        if (! $pagePartsAttrs) return;
+
+        $this->_pageParts = array();
+
+        foreach ($pagePartsAttrs as $attrs) {
+            if (isset($attrs['id'])) {
+                $model = PagePart::model()->findByPk($attrs['id']);
+            } else {
+                $model = new PagePart();
+                $model->page_id = $this->id;
+            }
+
+            $model->setAttributes($attrs);
+
+            $this->_pageParts[] = $model;
+        }
+    }
+
+    /**
+     * Произвести сохранение прикрепленных частей страницы.
+     * Если хотя бы одна модель не была сохранена успешно - вернет false.
+     *
+     * @return bool Результат массового сохраенения частей
+     */
+    public function savePageParts()
+    {
+        $saveState = true;
+
+        foreach ($this->getPageParts() as $model) {
+            if (! $model->save()) {
+                $saveState = false;
+            }
+        }
+
+        return $saveState;
+    }
+
+    /**
+     * Произвести валидацию прикрепленных частей страницы.
+     * Если хотя бы одна модель не была проваледирована - вернет false.
+     *
+     * @return bool Результат массового валидирования частей
+     */
+    public function validatePageParts()
+    {
+        $saveState = true;
+
+        foreach ($this->getPageParts() as $model) {
+            if (! $model->validate()) {
+                $saveState = false;
+            }
+        }
+
+        return $saveState;
+    }
+
+    /**
      * Возвращает список key => value, где в качестве ключа выступает
      * порядковый номер статуса, в качестве значения текстовое обозначение статуса.
      *
@@ -255,4 +345,5 @@ class Page extends CActiveRecord
             Page::STATUS_REVIEWED => Yii::t('app','Reviewed'),
         );
     }
-}
+
+} // end class

@@ -108,6 +108,22 @@
 	</div>
     <?php endif; ?>
 
+    <div id="PageParts">
+    <?php $this->renderPageParts($model, $form); ?>
+    </div>
+
+    <div class="row">
+        <?php echo CHtml::ajaxLink(Yii::t('app', 'Add Page part'), $this->createUrl('getPagePart'), array(
+            'dataType' => 'html',
+            'success' => 'js:function(partContent) {
+                $("#PageParts").append(partContent);
+            }',
+            'data' => 'js:{
+                index: $(".pagePartContent:last").data("index")
+            }',
+        )); ?>
+    </div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton(
             $model->getIsNewRecord() ? Yii::t('app','Create'): Yii::t('app','Save'),

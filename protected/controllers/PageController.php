@@ -63,7 +63,7 @@ class PageController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('index','delete','moveNode','makeRoot'),
+				'actions'=>array('index','delete','moveNode','makeRoot','getPagePart'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -89,21 +89,21 @@ class PageController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Page;
+		$model = new Page;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Page']))
-		{
-			$model->attributes=$_POST['Page'];
+		if (Yii::app()->request->getParam('Page') && Yii::app()->request->getParam('PagePart')) {
+            $model->setAttributes(Yii::app()->request->getParam('Page'));
+            $model->setPagePartsAttributes(Yii::app()->request->getParam('PagePart'));
             $model->setScenario(Page::SCENARIO_CREATE);
 
             $this->saveModel($model);
 		}
 
 		$this->render('create',array(
-			'model'=>$model,
+			'model' => $model,
 		));
 	}
 
@@ -114,16 +114,16 @@ class PageController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
         $model->setScenario($model->isRoot() ? Page::SCENARIO_UPDATE_ROOT: Page::SCENARIO_UPDATE);
 
-		if(isset($_POST['Page']))
-		{
-			$model->attributes=$_POST['Page'];
+		if (Yii::app()->request->getParam('Page') && Yii::app()->request->getParam('PagePart')) {
+			$model->setAttributes(Yii::app()->request->getParam('Page'));
+            $model->setPagePartsAttributes(Yii::app()->request->getParam('PagePart'));
             $this->saveModel($model);
 		}
 
@@ -142,8 +142,9 @@ class PageController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(Yii::app()->request->getPost('returnUrl', array('admin')));
+		if (! Yii::app()->request->isAjaxRequest) {
+            $this->redirect(Yii::app()->request->getPost('returnUrl', array('index')));
+        }
 	}
 
 	/**
@@ -155,7 +156,7 @@ class PageController extends Controller
 		$model->unsetAttributes();  // clear any default values
 
 		if ($page = Yii::app()->request->getParam('Page')) {
-            $model->attributes = $page;
+            $model->setAttributes($page);
         }
 
 		$this->render('index',array(
@@ -163,11 +164,29 @@ class PageController extends Controller
 		));
 	}
 
+    /**
+     * Генерирует HTML код для части страницы с заданным индексом.
+     */
+    public function actionGetPagePart($index = 0, $name = null)
+    {
+        $index = (int)$index + 1;
+        $name = !$name ? 'part-' . $index: $name;
+
+        $model = PagePart::newModel();
+        $model->name = $name;
+
+        $this->renderPartial('_part', array(
+            'form' => new CActiveForm(),
+            'model' => $model,
+            'index' => $index,
+        ));
+    }
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
      *
-	 * @param integer ID модели которую необходимо загрузить
+	 * @param integer $id ID модели которую необходимо загрузить
 	 */
 	public function loadModel($id)
 	{
@@ -181,7 +200,7 @@ class PageController extends Controller
 	/**
 	 * Производит Ajav валидацию модели.
      *
-	 * @param Page Модель для валидации
+	 * @param Page $model Модель для валидации
 	 */
 	protected function performAjaxValidation(Page $model)
 	{
@@ -196,11 +215,17 @@ class PageController extends Controller
      * Если параметр commit отсутсвует - производит перенаправление на действие view.
      * Добавляет flash сообщение об успешном сохранении модели.
      *
-     * @param Page Модель для сохранения
+     * @param $model Page Модель для сохранения
      */
     protected function saveModel(Page $model)
     {
-        if ($model->saveNode()) {
+        $validatePage = $model->validate();
+        $validatePageParts = $model->validatePageParts();
+
+        if ($validatePage && $validatePageParts()) {
+            $model->saveNode();
+            $model->savePageParts();
+
             Yii::app()->user->setFlash('success',
                 Yii::t('app', Page::MSG_MODEL_SAVED, array('{title}' => $model->title)));
 
@@ -209,4 +234,22 @@ class PageController extends Controller
             }
         }
     }
-}
+
+
+    /**
+     * Вывести элементы формы для частей страницы.
+     *
+     * @param Page $model Модель страницы
+     */
+    protected function renderPageParts(Page $model, CActiveForm $form)
+    {
+        foreach ($model->getPageParts() as $index => $pagePart) {
+            $this->renderPartial('_part', array(
+                'form' => $form,
+                'model' => $pagePart,
+                'index' => $index,
+            ));
+        }
+    }
+
+} // end class
