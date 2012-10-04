@@ -222,15 +222,15 @@ class PageController extends Controller
         $validatePage = $model->validate();
         $validatePageParts = $model->validatePageParts();
 
-        if ($validatePage && $validatePageParts()) {
+        if ($validatePage && $validatePageParts) {
             $model->saveNode();
             $model->savePageParts();
 
             Yii::app()->user->setFlash('success',
                 Yii::t('app', Page::MSG_MODEL_SAVED, array('{title}' => $model->title)));
 
-            if (Yii::app()->request->getPost('commit')) {
-                $this->redirect(array('view','id'=>$model->id));
+            if (Yii::app()->request->getPost('continue')) {
+                $this->redirect(array('update','id'=>$model->id));
             }
         }
     }
