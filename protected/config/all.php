@@ -14,6 +14,7 @@ return CMap::mergeArray(
 		'import'=>array(
 			'application.models.*',
 			'application.components.*',
+            'application.models.forms.*',
 		),
 
 		'modules'=>array(
