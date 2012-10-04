@@ -283,9 +283,11 @@ class Page extends CActiveRecord
                 $model = PagePart::model()->findByPk($attrs['id']);
             } else {
                 $model = new PagePart();
-                $model->page_id = $this->id;
             }
 
+            unset($attrs['id']);
+
+            $model->page_id = $this->id;
             $model->setAttributes($attrs);
 
             $this->_pageParts[] = $model;
