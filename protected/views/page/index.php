@@ -49,20 +49,19 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'id',
 		'title',
 		'slug',
-		/*
-		'parent_id',
-		'layout_id',
-		'behavior',
-		'status',
-		'created_on',
-		'updated_on',
-		'published_on',
-		'position',
-		'created_by_id',
-		'updated_by_id',
-		*/
+        'published_on',
+        array(
+            'header' => Page::model()->getAttributeLabel("status"),
+            'value' => '$data->getTextStatus();',
+        ),
 		array(
 			'class'=>'CButtonColumn',
+            'template'=>'{create}{update}{delete}',
+            'buttons'=>array(
+                'create' => array(
+                    'url'=>'Yii::app()->createUrl("page/create", array("id" => $data->id));',
+                ),
+            ),
 		),
 	),
 )); ?>

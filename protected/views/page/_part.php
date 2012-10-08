@@ -4,6 +4,12 @@
     <?php echo $form->errorSummary($model); ?>
 
     <div class="row">
+        <?php echo $form->checkBox($model,'[' . $index . ']is_protected'); ?>
+        <?php echo $form->label($model,'[' . $index . ']is_protected'); ?>
+        <?php echo $form->error($model,'[' . $index . ']is_protected'); ?>
+    </div>
+
+    <div class="row">
         <?php if ($model->id): ?>
         <?php echo $form->hiddenField($model,'[' . $index . ']id'); ?>
         <?php endif; ?>
@@ -13,7 +19,7 @@
     </div>
     <?php if ($index > 0): ?>
     <div class="row">
-        <?php echo CHtml::link(Yii::t('app', 'Remove Page part'), '#', array('onclick' => '$(this).parents(".item").remove();')); ?>
+        <?php echo CHtml::link(Yii::t('app', 'Remove Page part'), '#', array('onclick' => '$(this).parents(".item").remove(); return false;')); ?>
     </div>
     <?php endif; ?>
 </fieldset>

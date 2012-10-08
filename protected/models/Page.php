@@ -296,17 +296,33 @@ class Page extends CActiveRecord
 
     /**
      * Произвести сохранение прикрепленных частей страницы.
+     * Так же производит удаление частей, информация о которых не была передана.
      * Если хотя бы одна модель не была сохранена успешно - вернет false.
      *
      * @return bool Результат массового сохраенения частей
      */
     public function savePageParts()
     {
+        $partsIds = array();
         $saveState = true;
+
+        // Получение моделей уже прикрепленных частей
+        $existedParts = PagePart::model()->findAllByAttributes(array(
+            'page_id' => $this->id,
+        ));
 
         foreach ($this->getPageParts() as $model) {
             if (! $model->save()) {
                 $saveState = false;
+            } else {
+                $partsIds[] = $model->id;
+            }
+        }
+
+        // Удаление частей, информация о которых отсутствует в массиве POST
+        foreach ($existedParts as $model) {
+            if (in_array($model->id, $partsIds) === false) {
+                $model->delete();
             }
         }
 
@@ -330,6 +346,28 @@ class Page extends CActiveRecord
         }
 
         return $saveState;
+    }
+
+
+    /**
+     *
+     */
+    public function getTextStatus()
+    {
+        switch ($this->status) {
+            case Page::STATUS_DRAFT:
+                return Yii::t('app', 'Draft');
+                break;
+            case Page::STATUS_REVIEWED:
+                return Yii::t('app', 'Reviewed');
+                break;
+            case Page::STATUS_PUBLISHED:
+                return Yii::t('app', 'Published');
+                break;
+            case Page::STATUS_HIDDEN:
+                return Yii::t('app', 'Hidden');
+                break;
+        }
     }
 
     /**

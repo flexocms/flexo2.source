@@ -136,6 +136,10 @@
             $model->getIsNewRecord() ? Yii::t('app','Create and Continue'): Yii::t('app','Save and Continue'),
             array('name' => 'continue')
         ); ?>
+        <?php echo CHtml::submitButton(
+            $model->getIsNewRecord() ? Yii::t('app','Create and Add new'): Yii::t('app','Save and Add new'),
+            array('name' => 'new')
+        ); ?>
         <?php echo CHtml::link(Yii::t('app', 'Cancel'), $this->createUrl('index')); ?>
 	</div>
 

@@ -121,9 +121,9 @@ class PageController extends Controller
 
         $model->setScenario($model->isRoot() ? Page::SCENARIO_UPDATE_ROOT: Page::SCENARIO_UPDATE);
 
-		if (Yii::app()->request->getParam('Page') && Yii::app()->request->getParam('PagePart')) {
+		if (Yii::app()->request->getParam('Page')) {
 			$model->setAttributes(Yii::app()->request->getParam('Page'));
-            $model->setPagePartsAttributes(Yii::app()->request->getParam('PagePart'));
+            $model->setPagePartsAttributes(Yii::app()->request->getParam('PagePart', array()));
             $this->saveModel($model);
 		}
 
@@ -231,6 +231,8 @@ class PageController extends Controller
 
             if (Yii::app()->request->getPost('continue')) {
                 $this->redirect(array('update','id'=>$model->id));
+            } else if (Yii::app()->request->getPost('new')) {
+                $this->redirect(array('create'));
             }
         }
     }

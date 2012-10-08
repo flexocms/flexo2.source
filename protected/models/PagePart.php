@@ -19,6 +19,9 @@ class PagePart extends CActiveRecord
 {
     const DEFAULT_NAME = 'body';
 
+    const PROTECTED_NO = '0';
+    const PROTECTED_YES = '1';
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -49,7 +52,7 @@ class PagePart extends CActiveRecord
 			array('name', 'length', 'max'=>100),
             array('name, content', 'required'),
 			array('filter', 'length', 'max'=>25),
-			array('is_protected', 'length', 'max'=>1),
+			array('is_protected', 'in', 'range'=>array(self::PROTECTED_YES, self::PROTECTED_NO)),
 			array('content, content_html', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
