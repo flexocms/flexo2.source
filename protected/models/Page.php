@@ -350,24 +350,14 @@ class Page extends CActiveRecord
 
 
     /**
+     * Получить статус страницы в текстовом представлении.
      *
+     * @return string Статус в текстовом представлении
      */
-    public function getTextStatus()
+    public function getStatusText()
     {
-        switch ($this->status) {
-            case Page::STATUS_DRAFT:
-                return Yii::t('app', 'Draft');
-                break;
-            case Page::STATUS_REVIEWED:
-                return Yii::t('app', 'Reviewed');
-                break;
-            case Page::STATUS_PUBLISHED:
-                return Yii::t('app', 'Published');
-                break;
-            case Page::STATUS_HIDDEN:
-                return Yii::t('app', 'Hidden');
-                break;
-        }
+        $statusItems = $this->getStatusItems();
+        return isset($statusItems[$this->status]) ? $statusItems[$this->status]: Yii::t('app', 'Unknown status');
     }
 
     /**
@@ -379,10 +369,10 @@ class Page extends CActiveRecord
     static public function getStatusItems()
     {
         return array(
-            Page::STATUS_DRAFT => Yii::t('app','Draft'),
-            Page::STATUS_HIDDEN => Yii::t('app','Hidden'),
+            Page::STATUS_DRAFT     => Yii::t('app','Draft'),
+            Page::STATUS_HIDDEN    => Yii::t('app','Hidden'),
             Page::STATUS_PUBLISHED => Yii::t('app','Published'),
-            Page::STATUS_REVIEWED => Yii::t('app','Reviewed'),
+            Page::STATUS_REVIEWED  => Yii::t('app','Reviewed'),
         );
     }
 

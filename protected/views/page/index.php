@@ -51,8 +51,8 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'slug',
         'published_on',
         array(
-            'header' => Page::model()->getAttributeLabel("status"),
-            'value' => '$data->getTextStatus();',
+            'header' => CHtml::encode(Page::model()->getAttributeLabel("status")),
+            'value' => '$data->getStatusText();',
         ),
 		array(
 			'class'=>'CButtonColumn',

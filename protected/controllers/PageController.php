@@ -86,8 +86,10 @@ class PageController extends Controller
 	/**
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
+     *
+     * @param int $id [optional] ID родительской страницы
 	 */
-	public function actionCreate()
+	public function actionCreate($id = null)
 	{
 		$model = new Page;
 
@@ -110,6 +112,7 @@ class PageController extends Controller
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
+     *
 	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionUpdate($id)
@@ -135,6 +138,7 @@ class PageController extends Controller
 	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+     *
 	 * @param integer $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id)
@@ -166,11 +170,14 @@ class PageController extends Controller
 
     /**
      * Генерирует HTML код для части страницы с заданным индексом.
+     *
+     * @param int $index Индекс части страницы по-порядку
+     * @param string $name Название части страницы
      */
     public function actionGetPagePart($index = 0, $name = null)
     {
         $index = (int)$index + 1;
-        $name = !$name ? 'part-' . $index: $name;
+        $name = ($name === null ? 'part-' . $index: $name);
 
         $model = PagePart::newModel();
         $model->name = $name;
@@ -237,11 +244,11 @@ class PageController extends Controller
         }
     }
 
-
     /**
      * Вывести элементы формы для частей страницы.
      *
      * @param Page $model Модель страницы
+     * @param CActiveForm Модель формы, в состав которой должны входить части страницы
      */
     protected function renderPageParts(Page $model, CActiveForm $form)
     {

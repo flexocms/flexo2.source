@@ -50,7 +50,8 @@ class PagePart extends CActiveRecord
 		return array(
 			array('page_id', 'numerical', 'integerOnly'=>true),
 			array('name', 'length', 'max'=>100),
-            array('name, content', 'required'),
+            array('name', 'match', 'pattern'=>'/^[a-zA-Z0-9\-\_]+$/'),
+            array('name', 'required'),
 			array('filter', 'length', 'max'=>25),
 			array('is_protected', 'in', 'range'=>array(self::PROTECTED_YES, self::PROTECTED_NO)),
 			array('content, content_html', 'safe'),
