@@ -193,13 +193,14 @@ class Page extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+            'pagination'=>false,
 		));
 	}
 
     /**
      * Функция выполняется при первом сохранении информации из модели в БД.
      */
-    public function onBeforeInsert()
+    public function beforeInsert()
     {
         $this->created_by_id = Yii::app()->user->id;
         $this->updated_by_id = Yii::app()->user->id;
@@ -287,7 +288,6 @@ class Page extends CActiveRecord
 
             unset($attrs['id']);
 
-            $model->page_id = $this->id;
             $model->setAttributes($attrs);
 
             $this->_pageParts[] = $model;
@@ -312,6 +312,8 @@ class Page extends CActiveRecord
         ));
 
         foreach ($this->getPageParts() as $model) {
+            $model->page_id = $this->id;
+
             if (! $model->save()) {
                 $saveState = false;
             } else {

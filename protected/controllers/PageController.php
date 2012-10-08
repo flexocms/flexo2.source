@@ -91,7 +91,7 @@ class PageController extends Controller
 	 */
 	public function actionCreate($id = null)
 	{
-		$model = new Page;
+		$model = new Page(Page::SCENARIO_CREATE);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -99,9 +99,8 @@ class PageController extends Controller
 		if (Yii::app()->request->getParam('Page') && Yii::app()->request->getParam('PagePart')) {
             $model->setAttributes(Yii::app()->request->getParam('Page'));
             $model->setPagePartsAttributes(Yii::app()->request->getParam('PagePart'));
-            $model->setScenario(Page::SCENARIO_CREATE);
 
-            $this->saveModel($model);
+            $this->saveModel($model, $id);
 		}
 
 		$this->render('create',array(
@@ -224,13 +223,18 @@ class PageController extends Controller
      *
      * @param $model Page Модель для сохранения
      */
-    protected function saveModel(Page $model)
+    protected function saveModel(Page $model, $id = null)
     {
         $validatePage = $model->validate();
         $validatePageParts = $model->validatePageParts();
 
         if ($validatePage && $validatePageParts) {
-            $model->saveNode();
+            if ($model->getIsNewRecord() === false || $id === null) {
+                $model->saveNode();
+            } else {
+                $parentPage = Page::model()->findByPk($id);
+                $parentPage->append($model);
+            }
             $model->savePageParts();
 
             Yii::app()->user->setFlash('success',
@@ -240,6 +244,8 @@ class PageController extends Controller
                 $this->redirect(array('update','id'=>$model->id));
             } else if (Yii::app()->request->getPost('new')) {
                 $this->redirect(array('create'));
+            } else {
+                $this->redirect(array('index'));
             }
         }
     }

@@ -124,7 +124,8 @@ class CQTreeGridView extends CGridView
                   scroll: true
                 });
 
-                var url = $("#' . $this->getId() . '").yiiGridView("getUrl");
+                //var url = $("#' . $this->getId() . '").yiiGridView("getUrl");
+                var url = $(document).data("baseUrl") + "?r=" + $(document).data("controllerId");
 
                 $("#'.$this->getId().' .items tr.initialized, #'.$this->getId().' .items tr.before, #'.$this->getId().' .items tr.after").droppable({
                     accept: ".initialized",

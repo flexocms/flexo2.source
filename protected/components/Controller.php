@@ -20,4 +20,20 @@ class Controller extends CController
 	 * for more details on how to specify this property.
 	 */
 	public $breadcrumbs=array();
+
+
+    public function init()
+    {
+        $baseUrl = Yii::app()->getBaseUrl(true);
+        $controllerId = Yii::app()->controller->id;
+        //$actionId = Yii::app()->action;
+
+        Yii::app()->clientScript->registerScript('controller.init', '
+            $(document).ready(function() {
+                $(this)
+                    .data("baseUrl", "' . $baseUrl . '")
+                    .data("controllerId", "' . $controllerId . '");
+            });
+        ');
+    }
 }

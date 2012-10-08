@@ -45,10 +45,9 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
     'ajaxUpdate'=>false,
+    'enablePagination'=>false,
 	'columns'=>array(
-		'id',
 		'title',
-		'slug',
         'published_on',
         array(
             'header' => CHtml::encode(Page::model()->getAttributeLabel("status")),
