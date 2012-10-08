@@ -40,7 +40,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 )); ?>
 </div><!-- search-form -->
 
-<?php $this->widget('ext.QTreeGridView.CQTreeGridView', array(
+<?php $this->widget('ext.widgets.tree.CQTreeGridView', array(
 	'id'=>'page-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,

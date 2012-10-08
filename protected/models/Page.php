@@ -65,7 +65,7 @@ class Page extends CActiveRecord
     {
         return array(
             'tree'=>array(
-                'class'=>'ext.NestedSetBehavior.NestedSetBehavior',
+                'class'=>'ext.behaviors.NestedSetBehavior',
                 'leftAttribute'=>'left_key',
                 'rightAttribute'=>'right_key',
                 'levelAttribute'=>'level',
