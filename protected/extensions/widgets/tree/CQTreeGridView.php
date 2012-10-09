@@ -38,11 +38,11 @@ class CQTreeGridView extends CGridView
     {
         parent::init();
         if ($this->baseTreeTableUrl===null) {
-            $this->baseTreeTableUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.QTreeGridView.treeTable'));
+            $this->baseTreeTableUrl=Yii::app()->getAssetManager()->publish(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'treeTable');
         }
 
         if ($this->baseJuiUrl===null) {
-            $this->baseJuiUrl=Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.QTreeGridView.jui'));
+            $this->baseJuiUrl=Yii::app()->getAssetManager()->publish(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'jui');
         }
 
         // Calc parent id from nesteD set
