@@ -12,10 +12,11 @@
  */
 
 
-Yii::import('zii.widgets.grid.CGridView');
+//Yii::import('zii.widgets.grid.CGridView');
+Yii::import('bootstrap.widgets.TbGridView');
 
 
-class CQTreeGridView extends CGridView
+class CQTreeGridView extends TbGridView
 {
 
     /**

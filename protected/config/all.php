@@ -8,7 +8,10 @@ return CMap::mergeArray(
 		'language' => 'ru',
 
 		// preloading 'log' component
-		'preload'=>array('log'),
+		'preload'=>array(
+            'log',
+            'bootstrap',
+        ),
 
 		// autoloading model and component classes
 		'import'=>array(
@@ -18,10 +21,20 @@ return CMap::mergeArray(
 		),
 
 		'modules'=>array(
+            'gii'=>array(
+                'generatorPaths'=>array(
+                    'bootstrap.gii',
+                ),
+            ),
 		),
 
 		// application components
 		'components'=>array(
+
+            'bootstrap'=>array(
+                'class'=>'ext.bootstrap.components.Bootstrap',
+            ),
+
 			'user'=>array(
 				// enable cookie-based authentication
 				'allowAutoLogin'=>true,

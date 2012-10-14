@@ -27,11 +27,11 @@ class PageController extends Controller
      */
     public function actions() {
         return array (
-            'create'=>'ext.QTreeGridView.actions.Create',
-            'update'=>'ext.QTreeGridView.actions.Update',
-            'delete'=>'ext.QTreeGridView.actions.Delete',
-            'moveNode'=>'ext.QTreeGridView.actions.MoveNode',
-            'makeRoot'=>'ext.QTreeGridView.actions.MakeRoot',
+            'create'=>'ext.widgets.tree.actions.Create',
+            'update'=>'ext.widgets.tree.actions.Update',
+            'delete'=>'ext.widgets.tree.actions.Delete',
+            'moveNode'=>'ext.widgets.tree.actions.MoveNode',
+            'makeRoot'=>'ext.widgets.tree.actions.MakeRoot',
         );
     }
 
